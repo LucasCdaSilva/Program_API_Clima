@@ -1,23 +1,18 @@
 from classes import Cidade
 import psycopg2 as db
+import json
+import html
 
 
 cidade = Cidade()
 
 cidade.setNome(input("Insira o nome da Cidade que deseja saber o clima: "))
+
+#Atualizacao dos dados consultando API
 cidade.clima_temp()
 
-nome_db = cidade.getNome()
-temp_db = cidade.temperatura()
-vento_db = cidade.vento()
-humidade_db = cidade.humidade()
-pressao_db = cidade.pressao()
-long_db = cidade.longitude()
-lat_db = cidade.latitude()
 
-
-import psycopg2
-
+#funcao de consuta no DB
 def consulta():
     connection = None
     try:
@@ -39,13 +34,13 @@ def consulta():
 
         print("Print each row and it's columns values")
         for row in all_records:
-            print("Nome = ", row[0], )
-            print("Temperatura = ", row[1])
-            print("Velocidade do Vento  = ", row[2],
-            print("Humidade = "), row[3],
-            print("Pressao Atmosferica"), row[4],
-            print("Longitude = "), row[5],
-            print("Latitude = "), row[6], "\n")
+            print("Nome = ", row[0]),
+            print("Temperatura = ", row[1]),
+            print("Velocidade do Vento  = ", row[2]),
+            print("Humidade = ", row[3]),
+            print("Pressao Atmosferica", row[4]),
+            print("Longitude = ", row[5]),
+            print("Latitude = ", row[6], "\n")
 
 
     except (Exception, db.DatabaseError) as error:
@@ -57,6 +52,7 @@ def consulta():
             print('Database connection closed.')
 
 
+#funcao de atualizacao do DB
 def atualiza():
     connection = None
     try:
@@ -69,7 +65,7 @@ def atualiza():
         # cria um cursor
         cur = connection.cursor()
 
-        cur.execute("INSERT into api_table_clima values ('{}','{}','{}','{}','{}','{}','{}')".format(nome_db, temp_db, vento_db, humidade_db, pressao_db, long_db, lat_db))
+        cur.execute("INSERT into api_table_clima values ('{}','{}','{}','{}','{}','{}','{}')".format(cidade.getNome(), cidade.temperatura(), cidade.vento(), cidade.humidade(), cidade.pressao(), cidade.longitude(), cidade.latitude()))
         id = cur.fetchone()
 
 
@@ -83,3 +79,4 @@ def atualiza():
 
 atualiza()
 consulta()
+
