@@ -1,25 +1,64 @@
+import psycopg2
 
-import psycopg2 as db
-
-
-class PostgresDB():
-    _db_postgres = None
-
-    def __init__(self, mhost, dbase, usr, pwd):
-        self._db_postgres = db.connect(host=mhost, database=dbase, user=usr,  password=pwd)
+def consulta():
+    connection = None
+    try:
         
-    def command(self, sql=""):
-        cur=self._db_postgres.cursor()
-        cur.execute(self.sql)
-        cur.close()
-        self._db_postgres.commit()
+        # connecta com o PostgreSQL server
+        print('Connecting to the PostgreSQL database...')
+        connection = db.connect(host="localhost",database="postgres",user="linx",password="linx_APi")
+        connection.autocommit = True      
+
+        #cria um cursor
+        cur=connection.cursor()
+
+        #Realiza consulta do banco      
+        select_Query = "select * from api_table_clima"
+
+        cur.execute(select_Query)
+        print("Selecionando todas os dados da tabela")
+        all_records = cur.fetchall()
+
+        print("Print each row and it's columns values")
+        for row in all_records:
+            print("Nome = ", row[0], )
+            print("Temperatura = ", row[1])
+            print("Velocidade do Vento  = ", row[2],
+            print("Humidade = "), row[3],
+            print("Pressao Atmosferica"), row[4],
+            print("Longitude = "), row[5],
+            print("Latitude = "), row[6], "\n")
+
+
+    except (Exception, db.DatabaseError) as error:
+        print(error)
+
+    finally:
+        if connection is not None:
+            connection.close()
+            print('Database connection closed.')
+
+
+def atualiza():
+    connection = None
+    try:
         
+        # connecta com o PostgreSQL server
+        print('Connecting to the PostgreSQL database...')
+        connection = db.connect(host="localhost",database="postgres",user="linx",password="linx_APi")
+        connection.autocommit = True      
+		
+        # cria um cursor
+        cur = connection.cursor()
 
-    def consultar(self, sql=""):
-        rs=None
-        cur=self._db_postgres.cursor()
-        cur.execute(sql)
-        rs=cur.fetchall()
+        cur.execute("INSERT into api_table_clima values ('{}','{}','{}','{}','{}','{}','{}')".format(nome_db, temp_db, vento_db, humidade_db, pressao_db, long_db, lat_db))
+        id = cur.fetchone()
 
-    def fechar(self):
-        self._db_postgres.close()
+
+    except (Exception, db.DatabaseError) as error:
+        print(error)
+
+    finally:
+        if connection is not None:
+            connection.close()
+            print('Database connection closed.')

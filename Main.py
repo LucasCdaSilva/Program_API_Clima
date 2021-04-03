@@ -7,7 +7,6 @@ cidade = Cidade()
 cidade.setNome(input("Insira o nome da Cidade que deseja saber o clima: "))
 cidade.clima_temp()
 
-
 nome_db = cidade.getNome()
 temp_db = cidade.temperatura()
 vento_db = cidade.vento()
@@ -16,6 +15,8 @@ pressao_db = cidade.pressao()
 long_db = cidade.longitude()
 lat_db = cidade.latitude()
 
+
+import psycopg2
 
 def consulta():
     connection = None
@@ -82,4 +83,3 @@ def atualiza():
 
 atualiza()
 consulta()
-
